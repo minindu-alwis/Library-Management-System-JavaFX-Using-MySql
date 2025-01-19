@@ -20,8 +20,16 @@ public class SignUpController implements SingUpService{
     }
 
     @Override
-    public boolean checkemailrepeat(String email) {
-        return false;
+    public boolean checkemailrepeat(String email) throws SQLException {
+
+        PreparedStatement preparedStatement = DBConnection.getInstance().getConnection().prepareStatement("SELECT email FROM users WHERE email = ?");
+        preparedStatement.setString(1, email);
+
+        ResultSet rst = preparedStatement.executeQuery();
+        if(rst.next()){
+            return false;
+        }
+        return true;
     }
 
     @Override

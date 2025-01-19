@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public interface SingUpService {
 
-    boolean checkemailrepeat(String email);
+    boolean checkemailrepeat(String email) throws SQLException;
 
     boolean registerUser(User newUser) throws SQLException;
 
