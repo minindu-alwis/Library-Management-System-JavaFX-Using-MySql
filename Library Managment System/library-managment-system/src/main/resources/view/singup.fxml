@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.icet.librarymanagmentsystem.controller.singup.SignUpFromController">
+   <children>
+      <Label layoutX="249.0" layoutY="69.0" text="User ID   - " />
+      <Label fx:id="txtUserID" layoutX="313.0" layoutY="69.0" text="L000#" />
+      <JFXTextField fx:id="userNameTxtField" layoutX="233.0" layoutY="123.0" promptText="User Name" />
+      <JFXTextField fx:id="gmailTxtField" layoutX="233.0" layoutY="194.0" promptText="Gmail" />
+      <JFXTextField fx:id="passwordTxtField" layoutX="233.0" layoutY="264.0" promptText="Password" />
+      <JFXButton layoutX="280.0" layoutY="331.0" onAction="#btnSingUpOnAction" text="Singup" />
+   </children>
+</AnchorPane>

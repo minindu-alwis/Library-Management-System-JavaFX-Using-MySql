@@ -29,7 +29,12 @@ public class LoginController implements LoginService{
         ResultSet rst = preparedStatement.executeQuery();
         if (rst.next()) {
             String encryptedPassword = rst.getString("password");
-            return password.equals(encryptedPassword);
+            String key = "12345";
+            BasicTextEncryptor basicTextEncryptor = new BasicTextEncryptor();
+            basicTextEncryptor.setPassword(key);
+            String decryptpassword = basicTextEncryptor.decrypt(encryptedPassword);
+            System.out.println(decryptpassword);
+            return password.equals(decryptpassword);
         } else {
             return false;
         }
