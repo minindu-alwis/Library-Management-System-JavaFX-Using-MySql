@@ -1,13 +1,21 @@
 package edu.icet.librarymanagmentsystem.controller.singup;
 
 import com.jfoenix.controls.JFXTextField;
-import edu.icet.librarymanagmentsystem.model.User;
+import edu.icet.librarymanagmentsystem.dto.User;
+import edu.icet.librarymanagmentsystem.service.ServiceFactory;
+import edu.icet.librarymanagmentsystem.service.custome.SignUpService;
+import edu.icet.librarymanagmentsystem.util.ServiceType;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.stage.Stage;
 import org.jasypt.util.text.BasicTextEncryptor;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
@@ -19,25 +27,47 @@ public class SignUpFromController implements Initializable{
     public JFXTextField gmailTxtField;
     public JFXTextField passwordTxtField;
 
-    public void btnSingUpOnAction(ActionEvent actionEvent) throws SQLException {
+    SignUpService signUpService = ServiceFactory.getInstance().getServiceType(ServiceType.SIGNUP);
 
-        if(SignUpController.getInstance().checkemailrepeat(gmailTxtField.getText())){
-                String password=encryptPassword();
-                if(SignUpController.getInstance().registerUser(new User(txtUserID.getText(),userNameTxtField.getText(), gmailTxtField.getText(), password))) {
+    public void btnSingUpOnAction(ActionEvent actionEvent) throws SQLException, IOException {
 
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "User Registered Successfully");
-                    alert.show();
-
-                }else{
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "User Not Registerd");
-                    alert.show();
-                }
-        }else{
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Email Alredy Exits");
+        if (userNameTxtField.getText().isEmpty() || gmailTxtField.getText().isEmpty() || passwordTxtField.getText().isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please fill all fields!");
             alert.show();
+            return;
         }
 
+        if (!gmailTxtField.getText().endsWith("@gmail.com")) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid Gmail! Use a @gmail.com address.");
+            alert.show();
+            return;
+        }
+
+        if (signUpService.checkemailrepeat(gmailTxtField.getText())) {
+            String password = encryptPassword();
+            if (signUpService.registerUser(new User(txtUserID.getText(), userNameTxtField.getText(), gmailTxtField.getText(), password))) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "User Registered Successfully");
+                alert.showAndWait();
+
+                Stage currentStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+                currentStage.close();
+
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/login.fxml"));
+                Stage stage = new Stage();
+                stage.setScene(new Scene(fxmlLoader.load()));
+                stage.show();
+            } else {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "User Not Registered, Try Again");
+                alert.show();
+                clear();
+            }
+        } else {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Email Already Exists");
+            alert.show();
+            clear();
+        }
     }
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -48,8 +78,8 @@ public class SignUpFromController implements Initializable{
         }
     }
 
-    private void getUserID() throws SQLException {
-        String userId=SignUpController.getInstance().genarateuserID();
+    public void getUserID() throws SQLException {
+        String userId=signUpService.genarateuserID();
         txtUserID.setText(userId);
     }
 
@@ -63,4 +93,24 @@ public class SignUpFromController implements Initializable{
         return encriptpassword;
     }
 
+
+    private void clear(){
+
+        userNameTxtField.clear();
+        gmailTxtField.clear();
+        passwordTxtField.clear();
+
+    }
+
+    public void btnLoginUpOnAction(ActionEvent actionEvent) throws IOException {
+
+        Stage currentStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        currentStage.close();
+
+        Stage stage = new Stage();
+        stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/view/login.fxml"))));
+        stage.show();
+        
+
+    }
 }

@@ -1,27 +1,19 @@
-package edu.icet.librarymanagmentsystem.controller.singup;
+package edu.icet.librarymanagmentsystem.repository.custom.impl;
 
 import edu.icet.librarymanagmentsystem.dbconnection.DBConnection;
-import edu.icet.librarymanagmentsystem.model.User;
+import edu.icet.librarymanagmentsystem.dto.User;
+import edu.icet.librarymanagmentsystem.repository.custom.SignupDao;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
-public class SignUpController implements SingUpService{
+public class SignupDaoImpl implements SignupDao {
 
-    private static SignUpController instance;
-
-    private SignUpController(){
-
-    }
-
-    public static SignUpController getInstance(){
-        return instance==null ? instance=new SignUpController() : instance;
-    }
 
     @Override
     public boolean checkemailrepeat(String email) throws SQLException {
-
         PreparedStatement preparedStatement = DBConnection.getInstance().getConnection().prepareStatement("SELECT email FROM users WHERE email = ?");
         preparedStatement.setString(1, email);
 
@@ -42,12 +34,10 @@ public class SignUpController implements SingUpService{
         prepareStm.setString(3, newUser.getEmail());
         prepareStm.setString(4, newUser.getPassword());
         return prepareStm.executeUpdate() > 0;
-
     }
 
     @Override
     public String genarateuserID() throws SQLException {
-
         ResultSet rst = DBConnection.getInstance().getConnection().createStatement().executeQuery(
                 "SELECT id FROM users ORDER BY id DESC LIMIT 1"
         );
@@ -58,6 +48,30 @@ public class SignUpController implements SingUpService{
         } else {
             return "L0001";
         }
+    }
 
+    @Override
+    public boolean save(User entity) throws SQLException {
+        return false;
+    }
+
+    @Override
+    public boolean update(User entity) throws SQLException {
+        return false;
+    }
+
+    @Override
+    public User search(String s) throws SQLException {
+        return null;
+    }
+
+    @Override
+    public boolean delete(String s) throws SQLException {
+        return false;
+    }
+
+    @Override
+    public List<User> getAll() {
+        return List.of();
     }
 }

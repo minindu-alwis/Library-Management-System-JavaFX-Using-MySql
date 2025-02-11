@@ -1,4 +1,4 @@
-package edu.icet.librarymanagmentsystem.model;
+package edu.icet.librarymanagmentsystem.dto;
 
 
 import lombok.AllArgsConstructor;
