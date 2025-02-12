@@ -2,16 +2,20 @@ package edu.icet.librarymanagmentsystem.service.custome.impl;
 
 import edu.icet.librarymanagmentsystem.dbconnection.DBConnection;
 import edu.icet.librarymanagmentsystem.dto.User;
+import edu.icet.librarymanagmentsystem.entity.UserEntity;
 import edu.icet.librarymanagmentsystem.repository.DaoFactory;
 import edu.icet.librarymanagmentsystem.repository.custom.SignupDao;
 import edu.icet.librarymanagmentsystem.service.custome.SignUpService;
 import edu.icet.librarymanagmentsystem.util.DaoType;
+import org.modelmapper.ModelMapper;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class SignupServiceImpl implements SignUpService {
+
+    private final ModelMapper modelMapper=new ModelMapper();
 
     SignupDao signupDao= DaoFactory.getInstance().getDaoType(DaoType.SINGNUP);
 
@@ -27,16 +31,19 @@ public class SignupServiceImpl implements SignUpService {
 
     @Override
     public boolean checkemailrepeat(String email) throws SQLException {
-        return signupDao.checkemailrepeat(email);
+        UserEntity userEntity = signupDao.checkemailrepeat(email);
+        return userEntity == null;
     }
-
     @Override
     public boolean registerUser(User newUser) throws SQLException {
-        return signupDao.registerUser(newUser);
+        UserEntity entity = modelMapper.map(newUser, UserEntity.class);
+        return signupDao.registerUser(entity);
     }
 
     @Override
     public String genarateuserID() throws SQLException {
-     return signupDao.genarateuserID();
+        UserEntity userEntity = signupDao.generateUserID();
+        return userEntity.getId();
+
     }
 }

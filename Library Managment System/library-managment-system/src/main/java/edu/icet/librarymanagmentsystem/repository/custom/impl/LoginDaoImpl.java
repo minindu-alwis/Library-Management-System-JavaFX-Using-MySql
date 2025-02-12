@@ -3,8 +3,12 @@ package edu.icet.librarymanagmentsystem.repository.custom.impl;
 
 import edu.icet.librarymanagmentsystem.dbconnection.DBConnection;
 import edu.icet.librarymanagmentsystem.dto.User;
+import edu.icet.librarymanagmentsystem.entity.UserEntity;
 import edu.icet.librarymanagmentsystem.repository.custom.LoginDao;
+import edu.icet.librarymanagmentsystem.util.HibernateConfig;
+import org.hibernate.Session;
 import org.jasypt.util.text.BasicTextEncryptor;
+import org.modelmapper.ModelMapper;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,37 +19,42 @@ import java.util.List;
 
 public class LoginDaoImpl implements LoginDao {
 
-    @Override
-    public boolean authenticateUser(String email, String password) throws SQLException {
-        PreparedStatement preparedStatement = DBConnection.getInstance().getConnection().prepareStatement("SELECT password FROM users WHERE email = ?");
-        preparedStatement.setString(1, email);
+    public UserEntity authenticateUser(String email, String password) {
+        try (Session session = HibernateConfig.getSession()) {
+            session.beginTransaction();
 
-        ResultSet rst = preparedStatement.executeQuery();
-        if (rst.next()) {
-            String encryptedPassword = rst.getString("password");
-            String key = "12345";
-            BasicTextEncryptor basicTextEncryptor = new BasicTextEncryptor();
-            basicTextEncryptor.setPassword(key);
-            String decryptpassword = basicTextEncryptor.decrypt(encryptedPassword);
-            System.out.println(decryptpassword);
-            return password.equals(decryptpassword);
-        } else {
-            return false;
+            UserEntity user = session.createQuery("FROM UserEntity WHERE email = :email", UserEntity.class)
+                    .setParameter("email", email)
+                    .uniqueResult();
+
+            session.getTransaction().commit();
+
+            if (user != null) {
+                BasicTextEncryptor basicTextEncryptor = new BasicTextEncryptor();
+                basicTextEncryptor.setPassword("12345");
+                String decryptedPassword = basicTextEncryptor.decrypt(user.getPassword());
+
+                if (password.equals(decryptedPassword)) {
+                    return user;
+                }
+            }
         }
+        return null;
     }
 
+
     @Override
-    public boolean save(User entity) throws SQLException {
+    public boolean save(UserEntity entity) throws SQLException {
         return false;
     }
 
     @Override
-    public boolean update(User entity) throws SQLException {
+    public boolean update(UserEntity entity) throws SQLException {
         return false;
     }
 
     @Override
-    public User search(String s) throws SQLException {
+    public UserEntity search(String s) throws SQLException {
         return null;
     }
 
@@ -55,7 +64,7 @@ public class LoginDaoImpl implements LoginDao {
     }
 
     @Override
-    public List<User> getAll() {
+    public List<UserEntity> getAll() {
         return List.of();
     }
 }

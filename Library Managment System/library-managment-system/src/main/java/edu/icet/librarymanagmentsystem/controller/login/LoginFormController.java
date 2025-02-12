@@ -19,6 +19,7 @@ public class LoginFormController {
     public JFXTextField emailTxtField;
     public JFXPasswordField passwordTxtField;
 
+
     LoginService loginService= ServiceFactory.getInstance().getServiceType(ServiceType.LOGIN);
 
     public void btnLoginOnAction(ActionEvent actionEvent) throws SQLException {

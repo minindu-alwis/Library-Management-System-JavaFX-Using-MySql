@@ -2,7 +2,12 @@ package edu.icet.librarymanagmentsystem.repository.custom.impl;
 
 import edu.icet.librarymanagmentsystem.dbconnection.DBConnection;
 import edu.icet.librarymanagmentsystem.dto.User;
+import edu.icet.librarymanagmentsystem.entity.UserEntity;
 import edu.icet.librarymanagmentsystem.repository.custom.SignupDao;
+import edu.icet.librarymanagmentsystem.util.HibernateConfig;
+import org.hibernate.Session;
+import org.hibernate.query.Query;
+import org.modelmapper.ModelMapper;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,56 +17,74 @@ import java.util.List;
 public class SignupDaoImpl implements SignupDao {
 
 
-    @Override
-    public boolean checkemailrepeat(String email) throws SQLException {
-        PreparedStatement preparedStatement = DBConnection.getInstance().getConnection().prepareStatement("SELECT email FROM users WHERE email = ?");
-        preparedStatement.setString(1, email);
+    public UserEntity checkemailrepeat(String email) {
+        Session session = HibernateConfig.getSession();
+        UserEntity user = null;
 
-        ResultSet rst = preparedStatement.executeQuery();
-        if(rst.next()){
-            return false;
+        try {
+            user = session.createQuery("FROM UserEntity WHERE email = :email", UserEntity.class)
+                    .setParameter("email", email)
+                    .uniqueResult();
+        } finally {
+            session.close();
         }
+
+        return user;
+    }
+
+
+
+    @Override
+    public boolean registerUser(UserEntity newUser) throws SQLException {
+
+        Session session = HibernateConfig.getSession();
+        session.beginTransaction();
+        session.persist(newUser);
+        session.getTransaction().commit();
+        session.close();
         return true;
     }
 
     @Override
-    public boolean registerUser(User newUser) throws SQLException {
-        PreparedStatement prepareStm = DBConnection.getInstance().getConnection().prepareStatement(
-                "INSERT INTO users (id,username, email, password) VALUES (?, ?, ?, ?)"
-        );
-        prepareStm.setString(1, newUser.getId());
-        prepareStm.setString(2, newUser.getUsername());
-        prepareStm.setString(3, newUser.getEmail());
-        prepareStm.setString(4, newUser.getPassword());
-        return prepareStm.executeUpdate() > 0;
-    }
+    public UserEntity generateUserID() {
+        String newUserId;
 
-    @Override
-    public String genarateuserID() throws SQLException {
-        ResultSet rst = DBConnection.getInstance().getConnection().createStatement().executeQuery(
-                "SELECT id FROM users ORDER BY id DESC LIMIT 1"
-        );
-        if (rst.next()) {
-            String existId = rst.getString(1);
-            int id=Integer.parseInt(existId.substring(1));
-            return String.format("L%04d", id + 1);
-        } else {
-            return "L0001";
+        try (Session session = HibernateConfig.getSession()) {
+            session.beginTransaction();
+
+            String existId = session.createQuery("SELECT u.id FROM UserEntity u ORDER BY u.id DESC", String.class)
+                    .setMaxResults(1)
+                    .uniqueResult();
+
+            if (existId != null) {
+                int id = Integer.parseInt(existId.substring(1));
+                newUserId = String.format("L%04d", id + 1);
+            } else {
+                newUserId = "L0001";
+            }
+
+            session.getTransaction().commit();
         }
+
+        UserEntity newUser = new UserEntity();
+        newUser.setId(newUserId);
+        return newUser;
     }
 
+
+
     @Override
-    public boolean save(User entity) throws SQLException {
+    public boolean save(UserEntity entity) throws SQLException {
         return false;
     }
 
     @Override
-    public boolean update(User entity) throws SQLException {
+    public boolean update(UserEntity entity) throws SQLException {
         return false;
     }
 
     @Override
-    public User search(String s) throws SQLException {
+    public UserEntity search(String s) throws SQLException {
         return null;
     }
 
@@ -71,7 +94,7 @@ public class SignupDaoImpl implements SignupDao {
     }
 
     @Override
-    public List<User> getAll() {
+    public List<UserEntity> getAll() {
         return List.of();
     }
 }

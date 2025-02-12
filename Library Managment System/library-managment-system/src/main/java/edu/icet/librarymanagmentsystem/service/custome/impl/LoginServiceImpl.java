@@ -1,6 +1,7 @@
 package edu.icet.librarymanagmentsystem.service.custome.impl;
 
 import edu.icet.librarymanagmentsystem.dbconnection.DBConnection;
+import edu.icet.librarymanagmentsystem.entity.UserEntity;
 import edu.icet.librarymanagmentsystem.repository.DaoFactory;
 import edu.icet.librarymanagmentsystem.repository.custom.LoginDao;
 import edu.icet.librarymanagmentsystem.service.custome.LoginService;
@@ -27,8 +28,11 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public boolean authenticateUser(String email, String password) throws SQLException {
-
-        return loginDao.authenticateUser(email,password);
-}
+        UserEntity userEntity = loginDao.authenticateUser(email, password);
+        if (userEntity != null) {
+            return true;
+        }
+        return false;
+    }
 
 }
