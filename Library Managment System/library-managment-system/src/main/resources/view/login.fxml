@@ -1,31 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXPasswordField?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.Label?>
-<?import com.jfoenix.controls.JFXTextField?>
-<?import com.jfoenix.controls.JFXPasswordField?>
-<?import com.jfoenix.controls.JFXButton?>
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.icet.librarymanagmentsystem.controller.login.LoginFormController">
    <children>
       <HBox spacing="20">
          <children>
             <!-- Left side: Image Background -->
-            <AnchorPane prefWidth="300.0" prefHeight="400.0" style="-fx-background-image: url('/images/li.png'); -fx-background-size: cover;">
+            <AnchorPane prefHeight="400.0" prefWidth="300.0" style="-fx-background-image: url('/images/li.png'); -fx-background-size: cover;">
             </AnchorPane>
 
             <!-- Right side: Login Form -->
-            <VBox alignment="CENTER" spacing="10" prefWidth="300.0" prefHeight="400.0">
+            <VBox alignment="CENTER" prefHeight="400.0" prefWidth="300.0" spacing="10">
                <children>
-                  <Label text="Login to your Account" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
-                  <Label text="BookBridge - Bridging Readers to Knowledge 📚✨" style="-fx-font-size: 12px; -fx-text-fill: gray;" />
+                  <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Login to your Account" />
+                  <Label style="-fx-font-size: 12px; -fx-text-fill: gray;" text="BookBridge - Bridging Readers to Knowledge 📚✨" />
                   <JFXTextField fx:id="emailTxtField" promptText="Email" />
                   <JFXPasswordField fx:id="passwordTxtField" promptText="Password" />
-                  <JFXButton text="Login" style="-fx-background-color: #800040; -fx-text-fill: white;" onAction="#btnLoginOnAction" />
+                  <JFXButton onAction="#btnLoginOnAction" style="-fx-background-color: #800040; -fx-text-fill: white;" text="Login" />
                   <Label text="Not Registered Yet?" />
-                  <JFXButton text="Create an account" style="-fx-text-fill: #800040;" onAction="#btnSignUpOnAction" />
+                  <JFXButton onAction="#btnSignUpOnAction" style="-fx-text-fill: #800040;" text="Create an account" />
+                  <JFXButton onAction="#fogotPasswordBtnOnAction" text="Fogot Password" />
                </children>
             </VBox>
          </children>
