@@ -29,7 +29,7 @@ public class LoginFormController {
 
     LoginService loginService= ServiceFactory.getInstance().getServiceType(ServiceType.LOGIN);
 
-    public void btnLoginOnAction(ActionEvent actionEvent) throws SQLException {
+    public void btnLoginOnAction(ActionEvent actionEvent) throws SQLException, IOException {
 
         if(emailTxtField.getText().isEmpty() || passwordTxtField.getText().isEmpty()){
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please fill all fields!");
@@ -38,7 +38,9 @@ public class LoginFormController {
         }
 
         if(loginService.authenticateUser(emailTxtField.getText(), passwordTxtField.getText())){
-            System.out.println("User Exists");
+            Stage stage=new Stage();
+            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/view/membermanagment.fxml"))));
+            stage.show();
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please Create Account and Try Again");
             alert.show();

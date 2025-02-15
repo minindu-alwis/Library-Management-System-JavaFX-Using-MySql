@@ -2,17 +2,23 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXTextField?>
-<?import javafx.geometry.Pos?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="450.0" prefWidth="350.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.icet.librarymanagmentsystem.controller.fogotPass.FogotPasswordFormController">
+<AnchorPane prefHeight="251.0" prefWidth="350.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.icet.librarymanagmentsystem.controller.fogotPass.FogotPasswordFormController">
    <children>
       <!-- Centering the content using a VBox layout -->
-      <VBox layoutX="50.0" layoutY="50.0" alignment="CENTER" spacing="20.0">
-         <JFXTextField fx:id="otpCodeTxtField" promptText="Otp Code" style="-fx-prompt-text-fill: gray;" prefWidth="250.0"/>
-         <JFXTextField fx:id="newPasswordTxtField" promptText="New Password" style="-fx-prompt-text-fill: gray;" prefWidth="250.0"/>
-         <JFXButton layoutX="127.0" onAction="#btnResetOnAction" text="Reset Now" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14px; -fx-pref-width: 250px;"/>
+      <VBox alignment="CENTER" layoutX="50.0" layoutY="50.0" spacing="20.0">
+         <JFXTextField fx:id="otpCodeTxtField" prefWidth="250.0" promptText="Otp Code" style="-fx-prompt-text-fill: gray;" />
+         <JFXTextField fx:id="newPasswordTxtField" prefWidth="250.0" promptText="New Password" style="-fx-prompt-text-fill: gray;" />
+         <JFXButton layoutX="127.0" onAction="#btnResetOnAction" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14px; -fx-pref-width: 250px;" text="Reset Now" />
       </VBox>
+      <Label layoutX="121.0" layoutY="197.0" text="Rest Password Now !">
+         <font>
+            <Font name="Poppins Bold" size="12.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

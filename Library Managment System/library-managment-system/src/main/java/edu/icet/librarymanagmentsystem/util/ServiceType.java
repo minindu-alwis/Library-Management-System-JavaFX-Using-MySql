@@ -1,5 +1,5 @@
 package edu.icet.librarymanagmentsystem.util;
 
 public enum ServiceType {
-    LOGIN,SIGNUP,FOGGOTPASSWORD
+    LOGIN,SIGNUP,FOGGOTPASSWORD,MEMBER
 }
