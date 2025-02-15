@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MemberDaoImpl implements MemberDao {
@@ -22,11 +23,12 @@ public class MemberDaoImpl implements MemberDao {
             stmt.setString(1, entity.getId());
             stmt.setString(2, entity.getName());
             stmt.setString(3, entity.getContact());
-            stmt.setDate(4, java.sql.Date.valueOf(entity.getDate()));
+            stmt.setDate(4, entity.getDate()!=null ? java.sql.Date.valueOf(entity.getDate()) : null);
 
             return stmt.executeUpdate()>0;
         }
     }
+
 
     @Override
     public boolean update(MemberEntity entity) throws SQLException {
@@ -45,7 +47,25 @@ public class MemberDaoImpl implements MemberDao {
 
     @Override
     public List<MemberEntity> getAll() {
-        return List.of();
+        List<MemberEntity> members=new ArrayList<>();
+        String sql="SELECT * FROM libraryMembers";
+
+        try (Connection connection=DBConnection.getInstance().getConnection();
+             PreparedStatement stmt=connection.prepareStatement(sql);
+             ResultSet rs=stmt.executeQuery()) {
+
+            while (rs.next()) {
+                MemberEntity member=new MemberEntity();
+                member.setId(rs.getString("MemberID"));
+                member.setName(rs.getString("Name"));
+                member.setContact(rs.getString("ContactInfo"));
+                member.setDate(rs.getDate("MembershipDate").toLocalDate());
+                members.add(member);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return members;
     }
 
     @Override

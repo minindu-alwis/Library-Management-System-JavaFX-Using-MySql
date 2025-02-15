@@ -9,6 +9,7 @@ import edu.icet.librarymanagmentsystem.util.DaoType;
 import org.modelmapper.ModelMapper;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class MemberServiceImpl implements MemberService {
 
@@ -27,7 +28,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public boolean isAdded(Member member) throws SQLException {
         ModelMapper modelMapper=new ModelMapper();
-        MemberEntity memberEntity = modelMapper.map(member, MemberEntity.class);
+        MemberEntity memberEntity=modelMapper.map(member,MemberEntity.class);
         return memberDao.save(memberEntity);
     }
 
@@ -35,5 +36,11 @@ public class MemberServiceImpl implements MemberService {
     public String genarateuserID() {
         MemberEntity memberEntity = memberDao.genarateuserID();
         return memberEntity.getId();
+    }
+
+    @Override
+    public List<Member> getAll() {
+        List<MemberEntity> memberEntities = memberDao.getAll();
+        return memberEntities.stream().map(entity -> new ModelMapper().map(entity, Member.class)).toList();
     }
 }
